@@ -122,6 +122,9 @@ subtest 'get_rank_with_score_same' => sub {
     $redis_ranking->incr_score(one => 1);
     is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, 101];
     is_deeply [$redis_ranking->get_rank_with_score('one2')], [2, 100];
+
+    $redis_ranking->remove('one2');
+    is_deeply [$redis_ranking->get_rank_with_score('three')], [2, 50];
 };
 
 done_testing;

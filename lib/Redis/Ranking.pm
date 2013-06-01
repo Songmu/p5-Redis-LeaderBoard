@@ -25,6 +25,7 @@ has order => (
 
 no Mouse;
 
+# consider bulk?
 sub set_score {
     my ($self, $member, $score) = @_;
     $self->redis->zadd($self->key, $score, $member);
@@ -47,6 +48,13 @@ sub decr_score {
     $score = defined $score ? $score : 1;
 
     $self->redis->zincrby($self->key, -$score, $member);
+}
+
+# consider bulk?
+sub remove {
+    my ($self, $member) = @_;
+
+    $self->redis->zrem($self->key, $member);
 }
 
 sub get_rank_with_score {
