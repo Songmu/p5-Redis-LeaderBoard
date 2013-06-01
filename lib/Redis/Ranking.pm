@@ -74,22 +74,11 @@ sub get_rank_with_score {
     my $method = $self->order eq 'asc' ? 'zrevrank' : 'zrank';
     my $rank  = $self->get_sorted_order($member);
 
-    return ($rank + 1, $score) if $rank == 0; # zero origin
+    return (1, $score) if $rank == 0; # zero origin
 
-    my $above_member;
-    if ($self->order eq 'asc') {
-        $above_member = @{$redis->zrangebyscore($self->key, "($score", 'inf', 'limit', 0, 1) || []}[0];
-    }
-    else {
-        $above_member = @{$redis->zrevrangebyscore($self->key, "($score", '-inf', 'limit', 0, 1) || []}[0];
-    }
-
-    if ($above_member) {
-        $rank = $self->get_sorted_order($above_member) + 2;
-    }
-    else {
-        $rank = 1;
-    }
+    my ($min, $max) = $self->order eq 'asc' ? ("($score", 'inf') : ('-inf', "($score");
+    my $above_count = $redis->zcount($self->key, $min, $max);
+    $rank = $above_count + 1;
 
     ($rank, $score);
 }
