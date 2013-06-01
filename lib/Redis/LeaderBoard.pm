@@ -3,6 +3,7 @@ use 5.008001;
 our $VERSION = "0.01";
 use Mouse;
 use Mouse::Util::TypeConstraints;
+use Redis::LeaderBoard::Member;
 
 has key => (
     is       => 'ro',
@@ -24,6 +25,15 @@ has order => (
 );
 
 no Mouse;
+
+sub find_member {
+    my ($self, $member) = @_;
+
+    Redis::LeaderBoard::Member->new(
+        id           => $member,
+        leader_board => $self,
+    );
+}
 
 # consider bulk?
 sub set_score {
