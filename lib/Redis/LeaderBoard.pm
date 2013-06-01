@@ -1,4 +1,4 @@
-package Redis::Ranking;
+package Redis::LeaderBoard;
 use 5.008001;
 our $VERSION = "0.01";
 use Mouse;
@@ -16,10 +16,10 @@ has redis => (
     required => 1,
 );
 
-enum 'Redis::Ranking::Order' => qw/asc desc/;
+enum 'Redis::LeaderBoard::Order' => qw/asc desc/;
 has order => (
     is      => 'ro',
-    isa     => 'Redis::Ranking::Order',
+    isa     => 'Redis::LeaderBoard::Order',
     default => 'asc',
 );
 
@@ -124,15 +124,15 @@ __END__
 
 =head1 NAME
 
-Redis::Ranking - It's new $module
+Redis::LeaderBoard - It's new $module
 
 =head1 SYNOPSIS
 
-    use Redis::Ranking;
+    use Redis::LeaderBoard;
 
 =head1 DESCRIPTION
 
-Redis::Ranking is ...
+Redis::LeaderBoard is ...
 
 =head1 LICENSE
 

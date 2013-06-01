@@ -5,13 +5,13 @@ use utf8;
 use Test::More;
 use Test::RedisServer;
 use Redis;
-use Redis::Ranking;
+use Redis::LeaderBoard;
 
 my $redis_server = Test::RedisServer->new;
 my $redis = Redis->new($redis_server->connect_info);
 
 subtest 'get incr set' => sub {
-    my $redis_ranking = Redis::Ranking->new(
+    my $redis_ranking = Redis::LeaderBoard->new(
         key   => 'test1',
         redis => $redis,
     );
@@ -28,7 +28,7 @@ subtest 'get incr set' => sub {
 };
 
 subtest 'empty' => sub {
-    my $redis_ranking = Redis::Ranking->new(
+    my $redis_ranking = Redis::LeaderBoard->new(
         key   => 'empty',
         redis => $redis,
     );
@@ -40,7 +40,7 @@ subtest 'empty' => sub {
 };
 
 subtest 'get_rank_with_score' => sub {
-    my $redis_ranking = Redis::Ranking->new(
+    my $redis_ranking = Redis::LeaderBoard->new(
         key   => 'test_asc',
         redis => $redis,
     );
@@ -68,7 +68,7 @@ subtest 'get_rank_with_score' => sub {
 };
 
 subtest 'get_rank_with_score_desc' => sub {
-    my $redis_ranking = Redis::Ranking->new(
+    my $redis_ranking = Redis::LeaderBoard->new(
         key   => 'test_desc',
         redis => $redis,
         order => 'desc',
@@ -106,7 +106,7 @@ subtest 'get_rank_with_score_desc' => sub {
 };
 
 subtest 'get_rank_with_score_same' => sub {
-    my $redis_ranking = Redis::Ranking->new(
+    my $redis_ranking = Redis::LeaderBoard->new(
         key   => 'test_same1',
         redis => $redis,
     );

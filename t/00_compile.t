@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 use_ok $_ for qw(
-    Redis::Ranking
+    Redis::LeaderBoard
 );
 
 done_testing;

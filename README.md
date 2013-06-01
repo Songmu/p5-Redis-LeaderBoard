@@ -1,14 +1,14 @@
 # NAME
 
-Redis::Ranking - It's new $module
+Redis::LeaderBoard - It's new $module
 
 # SYNOPSIS
 
-    use Redis::Ranking;
+    use Redis::LeaderBoard;
 
 # DESCRIPTION
 
-Redis::Ranking is ...
+Redis::LeaderBoard is ...
 
 # LICENSE
 
