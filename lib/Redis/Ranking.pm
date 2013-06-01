@@ -57,6 +57,13 @@ sub remove {
     $self->redis->zrem($self->key, $member);
 }
 
+sub get_sorted_order {
+    my ($self, $member) = @_;
+
+    my $method = $self->order eq 'asc' ? 'zrevrank' : 'zrank';
+    $self->redis->$method($self->key, $member);
+}
+
 sub get_rank_with_score {
     my ($self, $member) = @_;
     my $redis = $self->redis;
@@ -65,7 +72,7 @@ sub get_rank_with_score {
     return unless defined $score; # should throw exception?
 
     my $method = $self->order eq 'asc' ? 'zrevrank' : 'zrank';
-    my $rank  = $redis->$method($self->key, $member);
+    my $rank  = $self->get_sorted_order($member);
 
     return ($rank + 1, $score) if $rank == 0; # zero origin
 
@@ -78,7 +85,7 @@ sub get_rank_with_score {
     }
 
     if ($above_member) {
-        $rank = $redis->$method($self->key, $above_member) + 2;
+        $rank = $self->get_sorted_order($above_member) + 2;
     }
     else {
         $rank = 1;
@@ -92,6 +99,33 @@ sub get_rank {
 
     my ($rank) = $self->get_rank_with_score($member);
     $rank;
+}
+
+sub get_rankings {
+    my ($self, %args) = @_;
+    my $limit  = exists $args{limit}  ? $args{limit}  : $self->member_count;
+    my $offset = exists $args{offset} ? $args{offset} : 0;
+
+    my $range_method = $self->order eq 'asc' ? 'zrevrange' : 'zrange';
+
+    my $members = $self->redis->$range_method($self->key, $offset, $offset + $limit - 1);
+    my @rankings;
+    # needs pipelie?
+    for my $member (@$members) {
+        my ($rank, $score) = $self->get_rank_with_score($member);
+
+        push @rankings, +{
+            member => $member,
+            score  => $score,
+            rank   => $rank,
+        };
+    }
+    \@rankings;
+}
+
+sub member_count {
+    my $self = shift;
+    $self->redis->zcard($self->key);
 }
 
 1;

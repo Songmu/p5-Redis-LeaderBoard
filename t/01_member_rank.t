@@ -3,18 +3,12 @@ use warnings;
 use utf8;
 
 use Test::More;
-use Test::Exception;
 use Test::RedisServer;
 use Redis;
 use Redis::Ranking;
 
 my $redis_server = Test::RedisServer->new;
 my $redis = Redis->new($redis_server->connect_info);
-
-my $redis_ranking = Redis::Ranking->new(
-    key   => 'ranking',
-    redis => $redis,
-);
 
 subtest 'get incr set' => sub {
     my $redis_ranking = Redis::Ranking->new(
@@ -70,6 +64,7 @@ subtest 'get_rank_with_score' => sub {
         is_deeply [$redis_ranking->get_rank_with_score($member)],  [$rank, $score];
         is $redis_ranking->get_rank($member), $rank;
     }
+
 };
 
 subtest 'get_rank_with_score_desc' => sub {
@@ -98,6 +93,16 @@ subtest 'get_rank_with_score_desc' => sub {
         is_deeply [$redis_ranking->get_rank_with_score($member)],  [$rank, $score];
         is $redis_ranking->get_rank($member), $rank;
     }
+
+    is_deeply $redis_ranking->get_rankings(limit => 2, offset => 3), [{
+        member => 'four',
+        rank   => 4,
+        score  => 20,
+    }, {
+        member => 'five',
+        rank   => 5,
+        score  => 30,
+    }];
 };
 
 subtest 'get_rank_with_score_same' => sub {
@@ -109,6 +114,7 @@ subtest 'get_rank_with_score_same' => sub {
         [1, one   => 100],
         [1, one2  => 100],
         [3, three => 50],
+        [4, four  => 30],
     );
     for my $score (@scores) {
         my ($rank, $member, $score) = @$score;
@@ -122,6 +128,56 @@ subtest 'get_rank_with_score_same' => sub {
     $redis_ranking->incr_score(one => 1);
     is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, 101];
     is_deeply [$redis_ranking->get_rank_with_score('one2')], [2, 100];
+
+    is $redis_ranking->member_count, 4;
+
+    subtest get_rankings => sub {
+        is_deeply( $redis_ranking->get_rankings, [{
+            member => 'one',
+            rank   => 1,
+            score  => 101,
+        }, {
+            member => 'one2',
+            rank   => 2,
+            score  => 100,
+        }, {
+            member => 'three',
+            rank   => 3,
+            score  => 50,
+        }, {
+            member => 'four',
+            rank   => 4,
+            score  => 30,
+        },]);
+
+        is_deeply( $redis_ranking->get_rankings(limit => 2), [{
+            member => 'one',
+            rank   => 1,
+            score  => 101,
+        }, {
+            member => 'one2',
+            rank   => 2,
+            score  => 100,
+        },]);
+
+        is_deeply( $redis_ranking->get_rankings(limit => 1, offset => 2), [{
+            member => 'three',
+            rank   => 3,
+            score  => 50,
+        },]);
+
+        is_deeply( $redis_ranking->get_rankings(limit => 10, offset => 2), [{
+            member => 'three',
+            rank   => 3,
+            score  => 50,
+        }, {
+            member => 'four',
+            rank   => 4,
+            score  => 30,
+        },]);
+
+        is_deeply( $redis_ranking->get_rankings(offset => 4), []);
+    };
 
     $redis_ranking->remove('one2');
     is_deeply [$redis_ranking->get_rank_with_score('three')], [2, 50];
