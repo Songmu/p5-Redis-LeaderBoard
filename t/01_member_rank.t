@@ -50,34 +50,26 @@ subtest 'get_rank_with_score' => sub {
         key   => 'test_asc',
         redis => $redis,
     );
-    my %score = (
-        one   => 100,
-        two   => 50,
-        two2  => 50,
-        four  => 30,
-        five  => 10,
-        six   => 8,
-        six2  => 8,
-        six3  => 8,
-        nine  => 1,
+    my @scores = (
+        [1, one   => 100],
+        [2, two   => 50],
+        [2, two2  => 50],
+        [4, four  => 30],
+        [5, five  => 10],
+        [6, six   => 8],
+        [6, six2  => 8],
+        [6, six3  => 8],
+        [9, nine  => 1],
     );
-    for my $member (keys %score) {
-        $redis_ranking->set_score($member => $score{$member});
+    for my $score (@scores) {
+        my ($rank, $member, $score) = @$score;
+        $redis_ranking->set_score($member => $score);
     }
-
-    subtest get_rank_with_score => sub {
-        is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, 100];
-        is_deeply [$redis_ranking->get_rank_with_score('two')],  [2, 50];
-        is_deeply [$redis_ranking->get_rank_with_score('two2')], [2, 50];
-        is_deeply [$redis_ranking->get_rank_with_score('four')], [4, 30];
-        is_deeply [$redis_ranking->get_rank_with_score('five')], [5, 10];
-        is_deeply [$redis_ranking->get_rank_with_score('six')],  [6, 8];
-        is_deeply [$redis_ranking->get_rank_with_score('six2')], [6, 8];
-        is_deeply [$redis_ranking->get_rank_with_score('six3')], [6, 8];
-        is_deeply [$redis_ranking->get_rank_with_score('nine')], [9, 1];
-
-        is $redis_ranking->get_rank('five'), 5;
-    };
+    for my $score (@scores) {
+        my ($rank, $member, $score) = @$score;
+        is_deeply [$redis_ranking->get_rank_with_score($member)],  [$rank, $score];
+        is $redis_ranking->get_rank($member), $rank;
+    }
 };
 
 subtest 'get_rank_with_score_desc' => sub {
@@ -86,34 +78,26 @@ subtest 'get_rank_with_score_desc' => sub {
         redis => $redis,
         order => 'desc',
     );
-    my %score = (
-        one   => -11,
-        two   => 11,
-        two2  => 11,
-        four  => 20,
-        five  => 30,
-        six   => 44,
-        six2  => 44,
-        six3  => 44,
-        nine  => 80,
+    my @scores = (
+        [1, one   => -11],
+        [2, two   => 11],
+        [2, two2  => 11],
+        [4, four  => 20],
+        [5, five  => 30],
+        [6, six   => 44],
+        [6, six2  => 44],
+        [6, six3  => 44],
+        [9, nine  => 80],
     );
-    for my $member (keys %score) {
-        $redis_ranking->set_score($member => $score{$member});
+    for my $score (@scores) {
+        my ($rank, $member, $score) = @$score;
+        $redis_ranking->set_score($member => $score);
     }
-
-    subtest get_rank_with_score => sub {
-        is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, -11];
-        is_deeply [$redis_ranking->get_rank_with_score('two')],  [2, 11];
-        is_deeply [$redis_ranking->get_rank_with_score('two2')], [2, 11];
-        is_deeply [$redis_ranking->get_rank_with_score('four')], [4, 20];
-        is_deeply [$redis_ranking->get_rank_with_score('five')], [5, 30];
-        is_deeply [$redis_ranking->get_rank_with_score('six')],  [6, 44];
-        is_deeply [$redis_ranking->get_rank_with_score('six2')], [6, 44];
-        is_deeply [$redis_ranking->get_rank_with_score('six3')], [6, 44];
-        is_deeply [$redis_ranking->get_rank_with_score('nine')], [9, 80];
-
-        is $redis_ranking->get_rank('five'), 5;
-    };
+    for my $score (@scores) {
+        my ($rank, $member, $score) = @$score;
+        is_deeply [$redis_ranking->get_rank_with_score($member)],  [$rank, $score];
+        is $redis_ranking->get_rank($member), $rank;
+    }
 };
 
 subtest 'get_rank_with_score_same' => sub {
@@ -121,21 +105,23 @@ subtest 'get_rank_with_score_same' => sub {
         key   => 'test_same1',
         redis => $redis,
     );
-    my %score = (
-        one   => 100,
-        one2  => 100,
-        three => 50,
+    my @scores = (
+        [1, one   => 100],
+        [1, one2  => 100],
+        [3, three => 50],
     );
-    for my $member (keys %score) {
-        $redis_ranking->set_score($member => $score{$member});
+    for my $score (@scores) {
+        my ($rank, $member, $score) = @$score;
+        $redis_ranking->set_score($member => $score);
     }
 
-    subtest get_rank_with_score => sub {
-        is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, 100];
-        is_deeply [$redis_ranking->get_rank_with_score('one2')], [1, 100];
-        is_deeply [$redis_ranking->get_rank_with_score('three')], [3, 50];
-    };
-};
+    is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, 100];
+    is_deeply [$redis_ranking->get_rank_with_score('one2')], [1, 100];
+    is_deeply [$redis_ranking->get_rank_with_score('three')], [3, 50];
 
+    $redis_ranking->incr_score(one => 1);
+    is_deeply [$redis_ranking->get_rank_with_score('one')],  [1, 101];
+    is_deeply [$redis_ranking->get_rank_with_score('one2')], [2, 100];
+};
 
 done_testing;
