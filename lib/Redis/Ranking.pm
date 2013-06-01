@@ -12,7 +12,7 @@ has key => (
 
 has redis => (
     is       => 'ro',
-    isa      => 'Redis',
+    isa      => 'Object',
     required => 1,
 );
 
