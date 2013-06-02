@@ -93,7 +93,7 @@ sub get_rank_with_score {
     return (1, $score) if $rank == 0; # zero origin
 
     my ($min, $max) = $self->is_asc ? ('-inf', "($score") : ("($score", 'inf');
-    my $above_count = $redis->zcount($self->key, $min, $max);
+    my $above_count = $self->member_count($min, $max);
     $rank = $above_count + 1;
 
     ($rank, $score);
@@ -129,8 +129,16 @@ sub rankings {
 }
 
 sub member_count {
-    my $self = shift;
-    $self->redis->zcard($self->key);
+    my ($self, $from, $to) = @_;
+
+    if (!$from && !$to) {
+        $self->redis->zcard($self->key);
+    }
+    else {
+        $from = defined $from ? $from : '-inf';
+        $to   = defined $to   ? $to   : 'inf';
+        $self->redis->zcount($self->key, $from, $to);
+    }
 }
 
 1;
