@@ -84,10 +84,9 @@ subtest 'get_rank_with_score_desc' => sub {
         [6, six3  => 44],
         [9, nine  => 80],
     );
-    for my $score (@scores) {
-        my ($rank, $member, $score) = @$score;
-        $redis_ranking->set_score($member => $score);
-    }
+
+    my @flat_scores = map { ($_->[1], $_->[2]) } @scores;
+    $redis_ranking->set_score(@flat_scores);
     for my $score (@scores) {
         my ($rank, $member, $score) = @$score;
         is_deeply [$redis_ranking->get_rank_with_score($member)],  [$rank, $score];

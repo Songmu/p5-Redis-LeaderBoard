@@ -35,10 +35,10 @@ sub find_member {
     );
 }
 
-# consider bulk?
 sub set_score {
-    my ($self, $member, $score) = @_;
-    $self->redis->zadd($self->key, $score, $member);
+    my ($self, @member_and_scores) = @_;
+    @member_and_scores = reverse @member_and_scores;
+    $self->redis->zadd($self->key, @member_and_scores);
 }
 
 sub get_score {
@@ -60,11 +60,10 @@ sub decr_score {
     $self->redis->zincrby($self->key, -$score, $member);
 }
 
-# consider bulk?
 sub remove {
-    my ($self, $member) = @_;
+    my ($self, @members) = @_;
 
-    $self->redis->zrem($self->key, $member);
+    $self->redis->zrem($self->key, @members);
 }
 
 sub get_sorted_order {
