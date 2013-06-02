@@ -7,7 +7,7 @@ has leader_board => (
     required => 1,
 );
 
-has id => (
+has member => (
     is       => 'ro',
     isa      => 'Str',
     required => 1,
@@ -18,9 +18,9 @@ no Mouse;
 sub score {
     my ($self, $score) = @_;
 
-    return $self->leader_board->get_score($self->id) unless $score;
+    return $self->leader_board->get_score($self->member) unless $score;
 
-    $self->leader_board->set_score($self->id, $score);
+    $self->leader_board->set_score($self->member, $score);
     $score;
 }
 
@@ -28,30 +28,30 @@ sub incr {
     my ($self, $score) = @_;
     $score = defined $score ? $score : 1;
 
-    $self->leader_board->incr_score($self->id, $score);
+    $self->leader_board->incr_score($self->member, $score);
 }
 
 sub decr {
     my ($self, $score) = @_;
     $score = defined $score ? $score : 1;
 
-    $self->leader_board->decr_score($self->id, $score);
+    $self->leader_board->decr_score($self->member, $score);
 }
 
 sub rank_with_score {
     my $self = shift;
-    $self->leader_board->get_rank_with_score($self->id);
+    $self->leader_board->get_rank_with_score($self->member);
 }
 
 sub rank {
     my $self = shift;
-    $self->leader_board->get_rank($self->id);
+    $self->leader_board->get_rank($self->member);
 }
 
 sub sorted_order {
     my $self = shift;
 
-    $self->leader_board->sorted_order($self->id);
+    $self->leader_board->sorted_order($self->member);
 }
 
 1;

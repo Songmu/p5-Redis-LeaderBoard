@@ -37,7 +37,7 @@ sub find_member {
     my ($self, $member) = @_;
 
     Redis::LeaderBoard::Member->new(
-        id           => $member,
+        member       => $member,
         leader_board => $self,
     );
 }

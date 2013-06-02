@@ -43,7 +43,7 @@ subtest 'get_rank_with_score' => sub {
     $member->incr(3);
     is $member->rank, 5;
     is $member->score, 10;
-    is $redis_ranking->get_rank($member->id), 5;
+    is $redis_ranking->get_rank($member->member), 5;
 
     $member->score(110);
     is $member->rank, 1;
