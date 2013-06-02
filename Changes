@@ -1,4 +1,6 @@
 Revision history for Perl extension Redis-LeaderBoard
 
 {{$NEXT}}
+
+0.01 2013-06-02T07:18:21Z
     - original version

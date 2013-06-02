@@ -50,7 +50,8 @@
       "test" : {
          "requires" : {
             "Test::More" : "0.98",
-            "Test::RedisServer" : "0"
+            "Test::RedisServer" : "0",
+            "Test::Requires" : "0"
          }
       }
    },
