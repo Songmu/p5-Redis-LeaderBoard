@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "leader board using Redis",
    "author" : [
       "Masayuki Matsuki <y.songmu@gmail.com>"
    ],
@@ -42,15 +42,29 @@
       },
       "runtime" : {
          "requires" : {
-            "perl" : "5.008005"
+            "Mouse" : "0",
+            "Redis" : "0",
+            "perl" : "5.008001"
          }
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.98"
+            "Test::More" : "0.98",
+            "Test::RedisServer" : "0"
          }
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/Songmu/p5-Redis-LeaderBoard/issues"
+      },
+      "homepage" : "https://github.com/Songmu/p5-Redis-LeaderBoard",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/Songmu/p5-Redis-LeaderBoard.git",
+         "web" : "https://github.com/Songmu/p5-Redis-LeaderBoard"
+      }
+   },
    "version" : "0.01"
 }
