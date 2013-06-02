@@ -106,7 +106,7 @@ sub get_rank {
     $rank;
 }
 
-sub get_rankings {
+sub rankings {
     my ($self, %args) = @_;
     my $limit  = exists $args{limit}  ? $args{limit}  : $self->member_count;
     my $offset = exists $args{offset} ? $args{offset} : 0;

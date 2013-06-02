@@ -93,7 +93,7 @@ subtest 'get_rank_with_score_desc' => sub {
         is $redis_ranking->get_rank($member), $rank;
     }
 
-    is_deeply $redis_ranking->get_rankings(limit => 2, offset => 3), [{
+    is_deeply $redis_ranking->rankings(limit => 2, offset => 3), [{
         member => 'four',
         rank   => 4,
         score  => 20,
@@ -130,8 +130,8 @@ subtest 'get_rank_with_score_same' => sub {
 
     is $redis_ranking->member_count, 4;
 
-    subtest get_rankings => sub {
-        is_deeply( $redis_ranking->get_rankings, [{
+    subtest rankings => sub {
+        is_deeply( $redis_ranking->rankings, [{
             member => 'one',
             rank   => 1,
             score  => 101,
@@ -149,7 +149,7 @@ subtest 'get_rank_with_score_same' => sub {
             score  => 30,
         },]);
 
-        is_deeply( $redis_ranking->get_rankings(limit => 2), [{
+        is_deeply( $redis_ranking->rankings(limit => 2), [{
             member => 'one',
             rank   => 1,
             score  => 101,
@@ -159,13 +159,13 @@ subtest 'get_rank_with_score_same' => sub {
             score  => 100,
         },]);
 
-        is_deeply( $redis_ranking->get_rankings(limit => 1, offset => 2), [{
+        is_deeply( $redis_ranking->rankings(limit => 1, offset => 2), [{
             member => 'three',
             rank   => 3,
             score  => 50,
         },]);
 
-        is_deeply( $redis_ranking->get_rankings(limit => 10, offset => 2), [{
+        is_deeply( $redis_ranking->rankings(limit => 10, offset => 2), [{
             member => 'three',
             rank   => 3,
             score  => 50,
@@ -175,7 +175,7 @@ subtest 'get_rank_with_score_same' => sub {
             score  => 30,
         },]);
 
-        is_deeply( $redis_ranking->get_rankings(offset => 4), []);
+        is_deeply( $redis_ranking->rankings(offset => 4), []);
     };
 
     $redis_ranking->remove('one2');
