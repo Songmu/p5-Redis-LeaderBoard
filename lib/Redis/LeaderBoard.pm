@@ -24,6 +24,13 @@ has order => (
     default => 'asc',
 );
 
+has is_asc => (
+    is   => 'ro',
+    isa  => 'Bool',
+    lazy => 1,
+    default => sub { shift->order eq 'asc' },
+);
+
 no Mouse;
 
 sub find_member {
@@ -69,7 +76,7 @@ sub remove {
 sub get_sorted_order {
     my ($self, $member) = @_;
 
-    my $method = $self->order eq 'asc' ? 'zrevrank' : 'zrank';
+    my $method = $self->is_asc ? 'zrevrank' : 'zrank';
     $self->redis->$method($self->key, $member);
 }
 
@@ -78,14 +85,14 @@ sub get_rank_with_score {
     my $redis = $self->redis;
 
     my $score = $self->get_score($member);
-    return unless defined $score; # should throw exception?
+    return unless defined $score;
 
-    my $method = $self->order eq 'asc' ? 'zrevrank' : 'zrank';
+    my $method = $self->is_asc ? 'zrevrank' : 'zrank';
     my $rank  = $self->get_sorted_order($member);
 
     return (1, $score) if $rank == 0; # zero origin
 
-    my ($min, $max) = $self->order eq 'asc' ? ("($score", 'inf') : ('-inf', "($score");
+    my ($min, $max) = $self->is_asc ? ("($score", 'inf') : ('-inf', "($score");
     my $above_count = $redis->zcount($self->key, $min, $max);
     $rank = $above_count + 1;
 
@@ -104,7 +111,7 @@ sub get_rankings {
     my $limit  = exists $args{limit}  ? $args{limit}  : $self->member_count;
     my $offset = exists $args{offset} ? $args{offset} : 0;
 
-    my $range_method = $self->order eq 'asc' ? 'zrevrange' : 'zrange';
+    my $range_method = $self->is_asc ? 'zrevrange' : 'zrange';
 
     my $members = $self->redis->$range_method($self->key, $offset, $offset + $limit - 1);
     my @rankings;
