@@ -21,7 +21,7 @@ enum 'Redis::LeaderBoard::Order' => qw/asc desc/;
 has order => (
     is      => 'ro',
     isa     => 'Redis::LeaderBoard::Order',
-    default => 'asc',
+    default => 'desc',
 );
 
 has is_asc => (
@@ -76,7 +76,7 @@ sub remove {
 sub get_sorted_order {
     my ($self, $member) = @_;
 
-    my $method = $self->is_asc ? 'zrevrank' : 'zrank';
+    my $method = $self->is_asc ? 'zrank' : 'zrevrank';
     $self->redis->$method($self->key, $member);
 }
 
@@ -87,12 +87,12 @@ sub get_rank_with_score {
     my $score = $self->get_score($member);
     return unless defined $score;
 
-    my $method = $self->is_asc ? 'zrevrank' : 'zrank';
+    my $method = $self->is_asc ? 'zrank' : 'zrevrank';
     my $rank  = $self->get_sorted_order($member);
 
     return (1, $score) if $rank == 0; # zero origin
 
-    my ($min, $max) = $self->is_asc ? ("($score", 'inf') : ('-inf', "($score");
+    my ($min, $max) = $self->is_asc ? ('-inf', "($score") : ("($score", 'inf');
     my $above_count = $redis->zcount($self->key, $min, $max);
     $rank = $above_count + 1;
 
@@ -111,7 +111,7 @@ sub rankings {
     my $limit  = exists $args{limit}  ? $args{limit}  : $self->member_count;
     my $offset = exists $args{offset} ? $args{offset} : 0;
 
-    my $range_method = $self->is_asc ? 'zrevrange' : 'zrange';
+    my $range_method = $self->is_asc ? 'zrange' : 'zrevrange';
 
     my $members = $self->redis->$range_method($self->key, $offset, $offset + $limit - 1);
     my @rankings;

@@ -71,7 +71,7 @@ subtest 'get_rank_with_score_desc' => sub {
     my $redis_ranking = Redis::LeaderBoard->new(
         key   => 'test_desc',
         redis => $redis,
-        order => 'desc',
+        order => 'asc',
     );
     my @scores = (
         [1, one   => -11],
