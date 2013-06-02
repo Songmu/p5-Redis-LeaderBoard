@@ -7,7 +7,8 @@ use Test::RedisServer;
 use Redis;
 use Redis::LeaderBoard;
 
-my $redis_server = Test::RedisServer->new;
+my $redis_server = eval { Test::RedisServer->new }
+    or plan skip_all => 'redis-server is required in PATH to run this test';
 my $redis = Redis->new($redis_server->connect_info);
 
 subtest 'get_rank_with_score' => sub {

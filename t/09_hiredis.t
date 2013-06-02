@@ -4,12 +4,13 @@ use utf8;
 
 use Test::More;
 use Test::RedisServer;
-use Redis;
+use Test::Requires qw/Redis::hiredis/;
 use Redis::LeaderBoard;
 
 my $redis_server = eval { Test::RedisServer->new }
     or plan skip_all => 'redis-server is required in PATH to run this test';
-my $redis = Redis->new($redis_server->connect_info);
+
+my $redis = Redis::hiredis->new(path => $redis_server->conf->{unixsocket});
 
 subtest 'get incr set' => sub {
     my $redis_ranking = Redis::LeaderBoard->new(
