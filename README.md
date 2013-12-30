@@ -25,7 +25,7 @@ Redis::LeaderBoard - leader board using Redis
 
 Redis::LeaderBoard is for providing leader board by using Redis's sorted set.
 
-z(rev)?rank of Redis 2.6 or older doesn't consider same scores.
+z(rev)?rank of Redis 2.8 or older doesn't consider same scores.
 This module resolve it.
 
 __THIS IS A ALPHA QUALITY RELEASE. API MAY CHANGE WITHOUT NOTICE__.
@@ -90,9 +90,10 @@ Get rank of member.
 
 Get sorted order in sorted set. (same as `$redis->zrank`)
 
-### `$count = $lb->member_count`
+### `$count = $lb->member_count([$from, $to])`
 
-Get number of members.
+Get number of members. If score range (`$from` and `$to`) is specified, it returns a number
+of members in range.
 
 ### `$rankings:ArrayRef<HashRef> = $lb->rankings(%opt)`
 

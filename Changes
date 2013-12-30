@@ -2,5 +2,8 @@ Revision history for Perl extension Redis-LeaderBoard
 
 {{$NEXT}}
 
+0.02 2013-12-30T03:54:16Z
+    - `member_count` method can accept $from and $to arguments
+
 0.01 2013-06-02T07:18:21Z
     - original version

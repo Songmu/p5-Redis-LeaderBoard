@@ -1,6 +1,6 @@
 package Redis::LeaderBoard;
 use 5.008001;
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 use Mouse;
 use Mouse::Util::TypeConstraints;
 use Redis::LeaderBoard::Member;
@@ -173,7 +173,7 @@ Redis::LeaderBoard - leader board using Redis
 
 Redis::LeaderBoard is for providing leader board by using Redis's sorted set.
 
-z(rev)?rank of Redis 2.6 or older doesn't consider same scores.
+z(rev)?rank of Redis 2.8 or older doesn't consider same scores.
 This module resolve it.
 
 B<THIS IS A ALPHA QUALITY RELEASE. API MAY CHANGE WITHOUT NOTICE>.
@@ -242,9 +242,10 @@ Get rank of member.
 
 Get sorted order in sorted set. (same as C<< $redis->zrank >>)
 
-=head3 C<< $count = $lb->member_count >>
+=head3 C<< $count = $lb->member_count([$from, $to]) >>
 
-Get number of members.
+Get number of members. If score range (C<$from> and C<$to>) is specified, it returns a number
+of members in range.
 
 =head3 C<< $rankings:ArrayRef<HashRef> = $lb->rankings(%opt) >>
 
