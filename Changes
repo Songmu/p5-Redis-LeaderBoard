@@ -2,6 +2,9 @@ Revision history for Perl extension Redis-LeaderBoard
 
 {{$NEXT}}
 
+0.03 2014-02-03T08:23:10Z
+    - add `expire_at` constructor option.
+
 0.02 2013-12-30T03:54:16Z
     - `member_count` method can accept $from and $to arguments
 

@@ -42,6 +42,9 @@
          }
       },
       "runtime" : {
+         "recommends" : {
+            "Redis::Fast" : "0"
+         },
          "requires" : {
             "Mouse" : "0",
             "Redis" : "0",
@@ -68,5 +71,5 @@
          "web" : "https://github.com/Songmu/p5-Redis-LeaderBoard"
       }
    },
-   "version" : "0.02"
+   "version" : "0.03"
 }
