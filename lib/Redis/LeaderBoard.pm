@@ -31,6 +31,11 @@ has is_asc => (
     default => sub { shift->order eq 'asc' },
 );
 
+has expire_at => (
+    is   => 'ro',
+    isa  => 'Int',
+);
+
 no Mouse;
 
 sub find_member {
@@ -46,6 +51,7 @@ sub set_score {
     my ($self, @member_and_scores) = @_;
     @member_and_scores = reverse @member_and_scores;
     $self->redis->zadd($self->key, @member_and_scores);
+    $self->_set_expire;
 }
 
 sub get_score {
@@ -57,14 +63,23 @@ sub incr_score {
     my ($self, $member, $score) = @_;
     $score = defined $score ? $score : 1;
 
-    $self->redis->zincrby($self->key, $score, $member);
+    my $ret = $self->redis->zincrby($self->key, $score, $member);
+    $self->_set_expire;
+    $ret;
 }
 
 sub decr_score {
     my ($self, $member, $score) = @_;
     $score = defined $score ? $score : 1;
 
-    $self->redis->zincrby($self->key, -$score, $member);
+    my $ret = $self->redis->zincrby($self->key, -$score, $member);
+    $self->_set_expire;
+    $ret;
+}
+
+sub _set_expire {
+    my $self = shift;
+    $self->redis->expireat($self->key, $self->expire_at) if $self->expire_at;
 }
 
 sub remove {
