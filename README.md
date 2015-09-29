@@ -28,7 +28,7 @@ Redis::LeaderBoard is for providing leader board by using Redis's sorted set.
 z(rev)?rank of Redis 2.8 or older doesn't consider same scores.
 This module resolve it.
 
-__THIS IS A ALPHA QUALITY RELEASE. API MAY CHANGE WITHOUT NOTICE__.
+**THIS IS A ALPHA QUALITY RELEASE. API MAY CHANGE WITHOUT NOTICE**.
 
 # INTERFACE
 
@@ -54,7 +54,7 @@ Create a new leader board object. Options should be set in `%options`.
 
 ### `$member_obj:Redis::LeaderBoard::Member = $lb->find_member($member:Str)`
 
-Find member by member id. see [Redis::LeaderBoard::Member](http://search.cpan.org/perldoc?Redis::LeaderBoard::Member) for more details.
+Find member by member id. see [Redis::LeaderBoard::Member](https://metacpan.org/pod/Redis::LeaderBoard::Member) for more details.
 
 ### `$lb->set_score($member:Str, $score:Number, [$member2, $score2,...])`
 
