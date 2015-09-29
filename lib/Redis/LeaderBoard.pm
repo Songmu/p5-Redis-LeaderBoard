@@ -132,17 +132,14 @@ sub rankings {
     return [] unless @$members_with_scores;
 
     my @rankings;
-    my ($member, $current_target_score) = splice @$members_with_scores, 0, 2;
-    my $current_rank = $self->get_rank($member);
-    my $same_score_members = $offset - $current_rank + 2;
-    push @rankings, +{
-        member => $member,
-        score  => $current_target_score,
-        rank   => $current_rank,
-    };
-
+    my ($current_rank, $current_target_score, $same_score_members);
     while (my ($member, $score) = splice @$members_with_scores, 0, 2) {
-        if ($score == $current_target_score) {
+        if (!$current_rank) {
+            $current_rank         = $self->get_rank($member);
+            $same_score_members   = $offset - $current_rank + 2;
+            $current_target_score = $score;
+        }
+        elsif ($score == $current_target_score) {
             $same_score_members++;
         }
         else {
