@@ -205,8 +205,6 @@ Redis::LeaderBoard is for providing leader board by using Redis's sorted set.
 z(rev)?rank of Redis 2.8 or older doesn't consider same scores.
 This module resolve it.
 
-B<THIS IS A ALPHA QUALITY RELEASE. API MAY CHANGE WITHOUT NOTICE>.
-
 =head1 INTERFACE
 
 =head2 Constructor
