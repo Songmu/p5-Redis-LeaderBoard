@@ -128,18 +128,35 @@ sub rankings {
 
     my $range_method = $self->is_asc ? 'zrange' : 'zrevrange';
 
-    my $members = $self->redis->$range_method($self->key, $offset, $offset + $limit - 1);
-    my @rankings;
-    # needs pipelie?
-    for my $member (@$members) {
-        my ($rank, $score) = $self->get_rank_with_score($member);
+    my $members_with_scores = $self->redis->$range_method($self->key, $offset, $offset + $limit - 1, 'WITHSCORES');
+    return [] unless @$members_with_scores;
 
+    my @rankings;
+    my ($member, $current_target_score) = splice @$members_with_scores, 0, 2;
+    my $current_rank = $self->get_rank($member);
+    my $same_score_members = $offset - $current_rank + 2;
+    push @rankings, +{
+        member => $member,
+        score  => $current_target_score,
+        rank   => $current_rank,
+    };
+
+    while (my ($member, $score) = splice @$members_with_scores, 0, 2) {
+        if ($score == $current_target_score) {
+            $same_score_members++;
+        }
+        else {
+            $current_target_score = $score;
+            $current_rank = $current_rank + $same_score_members;
+            $same_score_members = 1;
+        }
         push @rankings, +{
             member => $member,
             score  => $score,
-            rank   => $rank,
+            rank   => $current_rank,
         };
     }
+
     \@rankings;
 }
 
