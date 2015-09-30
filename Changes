@@ -2,6 +2,9 @@ Revision history for Perl extension Redis-LeaderBoard
 
 {{$NEXT}}
 
+1.01 2015-09-30T11:52:00Z
+    - add `get_rank_by_score` method and refactory
+
 1.00 2015-09-29T16:18:10Z
     - optimize `ranking` method using 'WITHSCORES'
 

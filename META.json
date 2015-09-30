@@ -4,7 +4,7 @@
       "Masayuki Matsuki <y.songmu@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.5.0, CPAN::Meta::Converter version 2.140640",
+   "generated_by" : "Minilla/v2.5.0, CPAN::Meta::Converter version 2.142060",
    "license" : [
       "perl_5"
    ],
@@ -70,5 +70,5 @@
          "web" : "https://github.com/Songmu/p5-Redis-LeaderBoard"
       }
    },
-   "version" : "1.00"
+   "version" : "1.01"
 }
