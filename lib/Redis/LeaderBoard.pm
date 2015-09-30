@@ -102,15 +102,7 @@ sub get_rank_with_score {
     my $score = $self->get_score($member);
     return unless defined $score;
 
-    my $method = $self->is_asc ? 'zrank' : 'zrevrank';
-    my $rank  = $self->get_sorted_order($member);
-
-    return (1, $score) if $rank == 0; # zero origin
-
-    my ($min, $max) = $self->is_asc ? ('-inf', "($score") : ("($score", 'inf');
-    my $above_count = $self->member_count($min, $max);
-    $rank = $above_count + 1;
-
+    my $rank = $self->get_rank_by_score($score);
     ($rank, $score);
 }
 
@@ -135,8 +127,7 @@ sub rankings {
     my ($current_rank, $current_target_score, $same_score_members);
     while (my ($member, $score) = splice @$members_with_scores, 0, 2) {
         if (!$current_rank) {
-            my ($min, $max) = $self->is_asc ? ('-inf', "($score") : ("($score", 'inf');
-            $current_rank = $self->member_count($min, $max) + 1;
+            $current_rank         = $self->get_rank_by_score($score);
             $same_score_members   = $offset - $current_rank + 2;
             $current_target_score = $score;
         }
@@ -156,6 +147,13 @@ sub rankings {
     }
 
     \@rankings;
+}
+
+sub get_rank_by_score {
+    my ($self, $score) = @_;
+
+    my ($min, $max) = $self->is_asc ? ('-inf', "($score") : ("($score", 'inf');
+    return $self->member_count($min, $max) + 1;
 }
 
 sub member_count {
