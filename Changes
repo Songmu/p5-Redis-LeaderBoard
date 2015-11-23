@@ -2,6 +2,9 @@ Revision history for Perl extension Redis-LeaderBoard
 
 {{$NEXT}}
 
+1.10 2015-11-23T16:22:42Z
+    - add `limit` accessor
+
 1.01 2015-09-30T11:52:00Z
     - add `get_rank_by_score` method and refactory
 

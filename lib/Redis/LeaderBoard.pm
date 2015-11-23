@@ -1,6 +1,6 @@
 package Redis::LeaderBoard;
 use 5.008001;
-our $VERSION = "1.01";
+our $VERSION = "1.10";
 use Mouse;
 use Mouse::Util::TypeConstraints;
 use Redis::LeaderBoard::Member;
