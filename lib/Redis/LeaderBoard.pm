@@ -36,6 +36,11 @@ has expire_at => (
     isa  => 'Int',
 );
 
+has limit => (
+    is  => 'ro',
+    isa => 'Int',
+);
+
 no Mouse;
 
 sub find_member {
@@ -51,7 +56,7 @@ sub set_score {
     my ($self, @member_and_scores) = @_;
     @member_and_scores = reverse @member_and_scores;
     $self->redis->zadd($self->key, @member_and_scores);
-    $self->_set_expire;
+    $self->_set_expire_and_limit;
 }
 
 sub get_score {
@@ -64,7 +69,7 @@ sub incr_score {
     $score = defined $score ? $score : 1;
 
     my $ret = $self->redis->zincrby($self->key, $score, $member);
-    $self->_set_expire;
+    $self->_set_expire_and_limit;
     $ret;
 }
 
@@ -73,13 +78,24 @@ sub decr_score {
     $score = defined $score ? $score : 1;
 
     my $ret = $self->redis->zincrby($self->key, -$score, $member);
-    $self->_set_expire;
+    $self->_set_expire_and_limit;
     $ret;
 }
 
-sub _set_expire {
+sub _set_expire_and_limit {
     my $self = shift;
     $self->redis->expireat($self->key, $self->expire_at) if $self->expire_at;
+
+    if ($self->limit) {
+        my $over = $self->member_count - $self->limit;
+        if ($over > 0) {
+            my ($from, $to) = (0, $over - 1);
+            if ($self->is_asc) {
+                ($from, $to) = (-$over, -1)
+            }
+            $self->redis->zremrangebyrank($self->key, $from, $to);
+        }
+    }
 }
 
 sub remove {
