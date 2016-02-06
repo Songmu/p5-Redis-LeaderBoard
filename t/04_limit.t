@@ -21,6 +21,12 @@ subtest 'limit with desc' => sub {
     $redis_ranking->set_score(
         zero  => 0,
         one   => 1,
+    );
+    is $redis_ranking->member_count, 2;
+
+    $redis_ranking->set_score(
+        zero  => 0,
+        one   => 1,
         two   => 2,
         three => 3,
         four  => 4,
@@ -70,6 +76,12 @@ subtest 'limit with desc' => sub {
         limit => 3,
         order => 'asc',
     );
+
+    $redis_ranking->set_score(
+        zero  => 0,
+        one   => 1,
+    );
+    is $redis_ranking->member_count, 2;
 
     $redis_ranking->set_score(
         zero  => 0,
