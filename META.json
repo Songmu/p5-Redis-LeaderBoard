@@ -70,5 +70,8 @@
          "web" : "https://github.com/Songmu/p5-Redis-LeaderBoard"
       }
    },
-   "version" : "1.10"
+   "version" : "1.11",
+   "x_contributors" : [
+      "Ichinose Shogo <shogo82148@gmail.com>"
+   ]
 }

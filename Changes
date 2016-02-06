@@ -2,6 +2,9 @@ Revision history for Perl extension Redis-LeaderBoard
 
 {{$NEXT}}
 
+1.11 2016-02-06T13:55:11Z
+    - Make limit atomic (shogo82148++)
+
 1.10 2015-11-23T16:22:42Z
     - add `limit` accessor
 
