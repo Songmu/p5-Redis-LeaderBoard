@@ -87,14 +87,11 @@ sub _set_expire_and_limit {
     $self->redis->expireat($self->key, $self->expire_at) if $self->expire_at;
 
     if ($self->limit) {
-        my $over = $self->member_count - $self->limit;
-        if ($over > 0) {
-            my ($from, $to) = (0, $over - 1);
-            if ($self->is_asc) {
-                ($from, $to) = (-$over, -1)
-            }
-            $self->redis->zremrangebyrank($self->key, $from, $to);
+        my ($from, $to) = (0, -$self->limit-1);
+        if ($self->is_asc) {
+            ($from, $to) = ($self->limit, -1)
         }
+        $self->redis->zremrangebyrank($self->key, $from, $to);
     }
 }
 
